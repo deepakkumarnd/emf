@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.homepage             = ""
   gem.summary              = %q{ A eventmachine based web application framework }
   gem.description          = %q{ A eventmachine based web application framework }
-  gem.files                = `git ls-files`.split('\n')
+  gem.files                = `git ls-files`.split("\n")
   gem.test_files           = gem.files.grep(/^(spec|test|features)/)
   gem.executables          = gem.files.grep(/^bin/).map{ |f| File.basename(f) }
   gem.require_paths        = ["lib"]
