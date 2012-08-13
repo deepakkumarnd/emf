@@ -31,7 +31,7 @@ DOC
     def self.parse(args)
         options  = {}
         options[:quiet]     = false
-        #options[:root_path] = Dir.pwd
+        options[:root_path] = Dir.pwd
         options[:env]       = :development
 
         OptionParser.new do |opts|
@@ -43,17 +43,14 @@ DOC
         end.parse!(args)
 
         sub_command = args.shift
-        if SUB_COMMANDS.include?(sub_command)
-            options[:sub_command]         = sub_command
-            options[:sub_command_options] = args unless args.empty?
-        end
+        print_command_usage_info and exit unless SUB_COMMANDS.include?(sub_command)
+        options[:sub_command]         = sub_command
+        options[:sub_command_options] = args unless args.empty?
         options
     end
 
-    private
-
-    def print_command_usage_info
-        write USAGE
+    def self.print_command_usage_info
+        puts USAGE
     end
 end
 
@@ -67,12 +64,10 @@ module Emf
             if @options.has_key?(:sub_command)
                 case @options[:sub_command]
                   when 'new' then new
-                  when 'server' then puts "Yet to implement"
+                  when 'server' then server
                   when 'console' then console
                   when 'destroy' then puts "Yet to implement"
                   when 'generate' then puts "Yet to implement"
-                  else
-                      write ArgumentParser::USAGE
                 end
             end
         end
@@ -93,6 +88,7 @@ module Emf
         end
 
         def server
+            Server.new(@options)
         end
 
         def console
@@ -101,4 +97,3 @@ module Emf
     end
 end
 
-Emf::Emf.new
