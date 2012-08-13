@@ -20,4 +20,9 @@ describe ArgumentParser do
       options = ArgumentParser.parse %w{-q}
       options[:quiet].should be_true
     end
+
+    it "should print the usage string" do
+        ArgumentParser.print_command_usage_info
+    end
 end
+
