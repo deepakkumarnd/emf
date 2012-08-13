@@ -3,14 +3,13 @@ $LOAD_PATH<< './lib'
 
 require 'optparse'
 require 'fileutils'
+require 'pry'
 
 require 'emf/version'
-require 'emf/server'
 require 'emf/exceptions'
 require 'emf/utilities'
 
-require 'pp'
-require 'pry'
+autoload :Server, 'emf/server'
 
 class ArgumentParser
 USAGE = <<DOC
@@ -38,8 +37,8 @@ DOC
             opts.banner = "Usage:\n emf new APP_PATH [options]"
             opts.on('-e', '--environment ENV', [:test, :development, :production ], 'Running environment test, development or production') { |e| options[:env] = e }
             opts.on('-q', '--quiet', 'Quiet mode') { options[:quiet] = true }
-            opts.on_tail('-v', '--version', 'Prints version information') { puts "Emf #{Emf::VERSION}" and exit }
-            opts.on_tail('-h', '--help', "Prints help information") { puts(opts) and exit }
+            opts.on_tail('-v', '--version', 'Prints version information') { puts "Emf #{Emf::VERSION}"; exit }
+            opts.on_tail('-h', '--help', "Prints help information") { puts(opts); exit }
         end.parse!(args)
 
         sub_command = args.shift
@@ -59,8 +58,8 @@ module Emf
         include Exceptions
         include Utilities
 
-        def initialize
-            @options = ArgumentParser.parse(ARGV)
+        def initialize args
+            @options = ArgumentParser.parse(args)
             if @options.has_key?(:sub_command)
                 case @options[:sub_command]
                   when 'new' then new
