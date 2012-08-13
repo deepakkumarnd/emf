@@ -2,12 +2,15 @@
 $LOAD_PATH<< './lib'
 
 require 'optparse'
+require 'fileutils'
 
 require 'emf/version'
 require 'emf/server'
 require 'emf/exceptions'
 require 'emf/utilities'
+
 require 'pp'
+require 'pry'
 
 class ArgumentParser
 USAGE = <<DOC
@@ -42,7 +45,7 @@ DOC
         sub_command = args.shift
         if SUB_COMMANDS.include?(sub_command)
             options[:sub_command]         = sub_command
-            options[:sub_commnad_options] = args unless args.empty?
+            options[:sub_command_options] = args unless args.empty?
         end
         options
     end
@@ -76,36 +79,20 @@ module Emf
 
         def new
           raise OptionNotFoundError unless @options.has_key?(:sub_command_options)
-          @options[:root_path] = File.expand_path(@options[:sub_command_option].shift)
+          @options[:root_path] = File.expand_path(@options[:sub_command_options].shift)
           root_path            = @options[:root_path]
           raise DuplicateDirectoryError if Dir.exists?(root_path)
           raise InvalidPathError unless Dir.exists?(File.dirname(root_path))
           @options[:app_name]  = File.basename(root_path)
 
           # create the application directory structure
-          Dir.mkdir(@options[:root_path])
-          Dir.mkdir("#{root_path}/app")
-          Dir.mkdir("#{root_path}/app/controllers")
-          Dir.mkdir("#{root_path}/app/models")
-          Dir.mkdir("#{root_path}/app/views")
-          Dir.mkdir("#{root_path}/app/helpers")
-          Dir.mkdir("#{root_path}/app/assets")
-          Dir.mkdir("#{root_path}/app/assets/javascripts")
-          Dir.mkdir("#{root_path}/app/assets/stylesheets")
-          Dir.mkdir("#{root_path}/app/assets/images")
-          Dir.mkdir("#{root_path}/config")
-          Dir.mkdir("#{root_path}/config/initializers")
-          Dir.mkdir("#{root_path}/db")
-          Dir.mkdir("#{root_path}/lib")
-          Dir.mkdir("#{root_path}/log")
-          Dir.mkdir("#{root_path}/doc")
-          Dir.mkdir("#{root_path}/spec")
-          Dir.mkdir("#{root_path}/script")
-          Dir.mkdir("#{root_path}/public")
-          Dir.mkdir("#{root_path}/test")
-
+          skel_path = "#{File.dirname(File.expand_path(__FILE__))}/skel"
+          FileUtils.cp_r(skel_path, root_path)
         rescue Exception => e
           write e.message
+        end
+
+        def server
         end
 
         def console
