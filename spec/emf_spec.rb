@@ -11,11 +11,6 @@ describe ArgumentParser do
       options[:env].should eq(:development)
     end
 
-    it "Should  set the default directory to current directory" do
-      options = ArgumentParser.parse []
-      options[:root_path].should eq(Dir.pwd)
-    end
-
     it "Should set the quiet mode to true if -q option is provided" do
       options = ArgumentParser.parse %w{-q}
       options[:quiet].should be_true
