@@ -1,2 +1,6 @@
-#!/usr/bin/env ruby
-
+module Emf
+    class Server
+        def initialize(options)
+        end
+    end
+end
